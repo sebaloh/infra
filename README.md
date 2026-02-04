@@ -10,7 +10,7 @@
   - [fail2ban](#fail2ban)
   - [Nginx](#nginx)
   - [openSSH](#openssh)
-	- [ufw](#ufw)
+  - [ufw](#ufw)
 - [Information](#information)
   - [DNS](#dns)
   - [Domains](#domains)
