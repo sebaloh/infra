@@ -10,6 +10,7 @@
   - [fail2ban](#fail2ban)
   - [Nginx](#nginx)
   - [openSSH](#openssh)
+	- [ufw](#ufw)
 - [Information](#information)
   - [DNS](#dns)
   - [Domains](#domains)
@@ -86,6 +87,18 @@ Secure remote access via encrypted SSH connections.
 | Ports     | `22/tcp`                                                                                      |
 | Config    | `not needed`                                                                                  |
 | Reference | [`GitHub`](https://github.com/openssh/openssh-portable), [`Website`](https://www.openssh.org) |
+
+### UFW
+
+> Check [`ufw/README.md`](/ufw/README.md) for further instructions.
+
+| Option    | Value                                         |
+| --------- | --------------------------------------------- |
+| Directory | `/etc/ufw`                                    |
+| Domains   | `not needed`                                  |
+| Ports     | `all`                                         |
+| Config    | [`ufw/`](/ufw/)                               |
+| Reference | [`Launchpad`](https://code.launchpad.net/ufw) |
 
 ## Information
 
