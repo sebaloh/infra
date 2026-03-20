@@ -15,34 +15,57 @@ First, create the necessary directories for storing SSL certificates and acme.sh
 ```sh
 # ToDo: Change domain name
 sudo mkdir -p /etc/nginx/certs/example.com
-sudo mkdir -p /usr/local/lib/acme.sh
-sudo mkdir -p /etc/acme.sh/dnsapi
-sudo chmod 700 /etc/acme.sh
+sudo mkdir -p /var/lib/acme/dnsapi
+sudo mkdir -p /var/lib/acme/notify
+sudo mkdir -p /etc/acme
 ```
 
-Next, download and install acme.sh along with the Hetzner DNS API plugin for automatic DNS validation.
+Next, switch to root user.
 
 ```sh
-sudo curl -O https://raw.githubusercontent.com/acmesh-official/acme.sh/master/acme.sh
+sudo -i
+```
 
-# ToDo: Change mail address
-sudo sh acme.sh --install --home /usr/local/lib/acme.sh --config-home /etc/acme.sh --accountmail mail@example.com --log /var/log/acme.sh.log
+After switching, download and install acme.sh along with the Hetzner DNS API plugin for automatic DNS validation.
 
-sudo curl -L -o /usr/local/lib/acme.sh/dnsapi/dns_hetznercloud.sh https://raw.githubusercontent.com/acmesh-official/acme.sh/master/dnsapi/dns_hetznercloud.sh
+```sh
+curl -O https://raw.githubusercontent.com/acmesh-official/acme.sh/master/acme.sh
+
+# ToDo: Change mail address and domain
+sh acme.sh --install \
+--home /var/lib/acme/ \
+--config-home /etc/acme \
+--cert-home /etc/nginx/certs/example.com \
+--accountemail mail@example.com \
+--log /var/log/acme.log
+
+curl -L -o /var/lib/acme/dnsapi/dns_hetznercloud.sh https://raw.githubusercontent.com/acmesh-official/acme.sh/master/dnsapi/dns_hetznercloud.sh
+
+curl -L -o /var/lib/acme/notify/ntfy.sh https://raw.githubusercontent.com/acmesh-official/acme.sh/master/notify/ntfy.sh
 
 source ~/.bashrc
+```
+
+First, we configure notifications with ntfy.
+
+```sh
+export NTFY_URL="https://ntfy.example.com"
+export NTFY_TOPIC="acme"
+export NTFY_TOKEN="{YOUR_TOKEN}"
+
+/var/lib/acme/acme.sh --set-notify --notify-hook ntfy --notify-level 3 --notify-mode 1 --notify-source example.com
 ```
 
 Now, issue a new SSL certificate using DNS validation with your Hetzner Cloud API token.
 
 ```sh
-export HETZNER_Token="<token>"
+export HETZNER_TOKEN="<token>"
 
 # ToDo: Change domain name (2x)
-/usr/local/lib/acme.sh/acme.sh --issue --dns dns_hetznercloud -d example.com -d '*.example.com'  --server letsencrypt --ecc
+/var/lib/acme/acme.sh --issue --dns dns_hetznercloud -d example.com -d '*.example.com'  --server letsencrypt --ecc
 
 # ToDo: Change domain name (3x)
-/usr/local/lib/acme.sh/acme.sh --install-cert -d example.com --ecc \
+/var/lib/acme/acme.sh --install-cert -d example.com --ecc \
 --fullchain-file /etc/nginx/certs/example.com/fullchain.pem \
 --key-file /etc/nginx/certs/example.com/key.pem \
 --reloadcmd "systemctl reload nginx"
