@@ -1,6 +1,6 @@
 # acme.sh
 
-This document is a collection of important information from the original `acme.sh` [documentation]( https://github.com/acmesh-official/acme.sh/wiki).
+This document is a collection of important information from the original `acme.sh` [documentation](https://github.com/acmesh-official/acme.sh/wiki).
 
 ## Content
 
@@ -8,34 +8,34 @@ This document is a collection of important information from the original `acme.s
 
 ## Installation
 
-> ℹ️ **Information:** The following instructions use `Hetzner DNS` for validation. Check [here](https://github.com/acmesh-official/acme.sh/wiki/dnsapi) for your provider.
+> ℹ️ **Information:** The following instructions use `Hetzner Cloud DNS` for validation and also configure `ntfy` as a notification service. See [DNS API](https://github.com/acmesh-official/acme.sh/wiki/dnsapi) for providers and [notify hooks](https://github.com/acmesh-official/acme.sh/wiki/notify) for notification services.
 
-First, create the necessary directories for storing SSL certificates and acme.sh configuration files.
-
-```sh
-# ToDo: Change domain name
-sudo mkdir -p /etc/nginx/certs/example.com
-sudo mkdir -p /var/lib/acme/dnsapi
-sudo mkdir -p /var/lib/acme/notify
-sudo mkdir -p /etc/acme
-```
-
-Next, switch to root user.
+First, for this installation, we need to be logged in as the root user.
 
 ```sh
 sudo -i
 ```
 
-After switching, download and install acme.sh along with the Hetzner DNS API plugin for automatic DNS validation.
+After switching, create the necessary directories for storing SSL certificates and acme.sh configuration files.
+
+```sh
+# ToDo: Change domain name
+mkdir -p /etc/nginx/certs/example.com
+mkdir -p /var/lib/acme/dnsapi
+mkdir -p /var/lib/acme/notify
+mkdir -p /etc/acme/certs
+```
+
+Next, download and install `acme.sh` along with the `Hetzner Cloud` API plugin for automatic DNS validation.
 
 ```sh
 curl -O https://raw.githubusercontent.com/acmesh-official/acme.sh/master/acme.sh
 
-# ToDo: Change mail address and domain
+# ToDo: Change mail address
 sh acme.sh --install \
 --home /var/lib/acme/ \
---config-home /etc/acme \
---cert-home /etc/nginx/certs/example.com \
+--config-home /etc/acme/ \
+--cert-home /etc/acme/certs/ \
 --accountemail mail@example.com \
 --log /var/log/acme.log
 
@@ -46,19 +46,22 @@ curl -L -o /var/lib/acme/notify/ntfy.sh https://raw.githubusercontent.com/acmesh
 source ~/.bashrc
 ```
 
-First, we configure notifications with ntfy.
+After installing, we configure notifications with `ntfy`.
 
 ```sh
+# ToDo: Change domain, topic and token
 export NTFY_URL="https://ntfy.example.com"
 export NTFY_TOPIC="acme"
-export NTFY_TOKEN="{YOUR_TOKEN}"
+export NTFY_TOKEN="<token>"
 
-/var/lib/acme/acme.sh --set-notify --notify-hook ntfy --notify-level 3 --notify-mode 1 --notify-source example.com
+# ToDo: Change server name
+/var/lib/acme/acme.sh --set-notify --notify-hook ntfy --notify-level 3 --notify-mode 1 --notify-source server-name
 ```
 
-Now, issue a new SSL certificate using DNS validation with your Hetzner Cloud API token.
+Now, issue a new SSL certificate using DNS validation with your `Hetzner Cloud` API token.
 
 ```sh
+# ToDo: Change token
 export HETZNER_TOKEN="<token>"
 
 # ToDo: Change domain name (2x)
